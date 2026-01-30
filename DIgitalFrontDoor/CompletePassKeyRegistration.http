@@ -1,0 +1,10 @@
+### GET request to example server
+POST http://localhost:5174/api/Passkey/CompletePassKeyRegistration
+Content-Type: application/json
+Accept: application/json
+
+{"id":"oevzI_K89FsNaa-NAsaPbYUVHs4","rawId":"W29iamVjdCBBcnJheUJ1ZmZlcl0=","type":"public-key","clientDataJSON":"W29iamVjdCBBcnJheUJ1ZmZlcl0=","attestationObject":"W29iamVjdCBBcnJheUJ1ZmZlcl0="}
+###
+
+### 
+POST http://localhost:5174/api/Passkey/CompletePassKeyRegistration

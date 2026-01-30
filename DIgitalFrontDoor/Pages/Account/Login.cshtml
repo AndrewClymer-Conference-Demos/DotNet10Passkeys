@@ -1,0 +1,51 @@
+@page
+@{
+    ViewData["Title"] = "Passkey Login";
+}
+
+<div class="container">
+    <h1>Passkey Login</h1>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="userName">User Name (Optional)</label>
+            <input type="text" id="userName" name="userName" class="form-control" autocomplete="username webauthn"/>
+        </div>
+        <button type="button" id="loginButton" class="btn btn-primary">Login with Passkey</button>
+        <button type="button" id="registerButton" class="btn btn-secondary" onclick="window.location.href='/Account/UserRegistration'">Register</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('loginButton').addEventListener('click', async function () {
+            // Add your JavaScript logic here
+            console.log('Login button clicked');
+
+            const username = document.getElementById('userName').value;
+            const optionsResponse =
+                await fetch(`/api/PassKey/PasskeyRequestOptions?username=${username}`,
+                    {
+                        method: 'POST'
+                    });
+            const optionsJson = await optionsResponse.json();
+            const options = PublicKeyCredential.parseRequestOptionsFromJSON(optionsJson);
+            const credentials =  await navigator.credentials.get({ publicKey: options, mediation:"conditional" });
+
+            const verificationResponse = await fetch('/api/PassKey/VerifyPasskey', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(credentials)
+            });
+            
+            if (verificationResponse.ok) {
+                console.log('Passkey login successful');
+                window.location.href = '/';
+            } else {
+                console.error('Passkey login failed');
+            }
+            
+        });
+    </script>
+}
