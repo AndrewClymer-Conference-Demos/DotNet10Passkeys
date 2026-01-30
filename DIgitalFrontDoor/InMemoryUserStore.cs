@@ -43,7 +43,7 @@ public class InMemoryUserStore : IUserStore<IdentityUser>, IUserPasskeyStore<Ide
         if (user.UserName == null) throw new ArgumentException("Identity must have a username");
         
        users.Add(user.Id,user);
-       users.Add(user.UserName.ToUpper(), user);
+       normalisedNameToUser.Add(user.UserName.ToUpper(), user);
        return Task.FromResult(IdentityResult.Success);
     }
 

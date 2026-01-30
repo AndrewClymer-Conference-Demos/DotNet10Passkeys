@@ -13,6 +13,9 @@
         <button type="button" id="loginButton" class="btn btn-primary">Login with Passkey</button>
         <button type="button" id="registerButton" class="btn btn-secondary" onclick="window.location.href='/Account/UserRegistration'">Register</button>
     </form>
+    <div>
+        <p id="status"></p>
+    </div>
 </div>
 
 @section Scripts {
@@ -20,7 +23,10 @@
         document.getElementById('loginButton').addEventListener('click', async function () {
             // Add your JavaScript logic here
             console.log('Login button clicked');
+            
+            const statusElement = document.getElementById('status');
 
+            statusElement.textContent = 'Initiating Passkey login...';
             const username = document.getElementById('userName').value;
             const optionsResponse =
                 await fetch(`/api/PassKey/PasskeyRequestOptions?username=${username}`,
@@ -29,7 +35,7 @@
                     });
             const optionsJson = await optionsResponse.json();
             const options = PublicKeyCredential.parseRequestOptionsFromJSON(optionsJson);
-            const credentials =  await navigator.credentials.get({ publicKey: options, mediation:"conditional" });
+            const credentials =  await navigator.credentials.get({ publicKey: options, mediation:"required" });
 
             const verificationResponse = await fetch('/api/PassKey/VerifyPasskey', {
                 method: 'POST',
@@ -39,11 +45,15 @@
                 body: JSON.stringify(credentials)
             });
             
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('ReturnUrl') || '/';
+
             if (verificationResponse.ok) {
                 console.log('Passkey login successful');
-                window.location.href = '/';
+                window.location.href = returnUrl;
             } else {
                 console.error('Passkey login failed');
+                statusElement.textContent = 'Passkey login failed. Please try again.';
             }
             
         });
