@@ -18,58 +18,71 @@
     </form>
 </div>
 
+<script src="/js/passkey.js"></script>
+
 @section Scripts {
     <script>
         document.getElementById('registerButton').addEventListener('click', async function () {
             const userName = document.getElementById('userName').value;
             const displayName = document.getElementById('displayName').value;
 
-            const payload = {
-                userName: userName,
-                displayName: displayName
-            };
-
-            try {
-                const response = await fetch('/api/Passkey/CreatePassKeyOptions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    console.log('Passkey options created successfully');
-                    
-                    const optionsAsJson = await response.json();
-                    const options = PublicKeyCredential.parseCreationOptionsFromJSON(optionsAsJson);
-                    
-                    await navigator.credentials.create({publicKey: options})
-                        .then(async (credential) => {
-                           
-                            const verificationResponse = await fetch('/api/Passkey/CompletePassKeyRegistration', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(credential)
-                            });
-
-                            if (verificationResponse.ok) {
-                                console.log('Passkey registered successfully');
-                            } else {
-                                console.error('Failed to verify passkey');
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error creating credentials:', error);
-                        });
-                } else {
-                    console.error('Failed to create passkey options');
-                }
-            } catch (error) {
-                console.error('Error:', error);
+            const registerResult= await registerPasskey(userName, displayName);
+            
+            if ( registerResult ) {
+                window.location = "/";
             }
+            else
+            {
+                alert("Passkey registration failed. Please try again.");
+            }
+                
+            
+            @* const payload = { *@
+            @*     userName: userName, *@
+            @*     displayName: displayName *@
+            @* }; *@
+            @* *@
+            @* try { *@
+            @*     const response = await fetch('/api/Passkey/CreatePassKeyOptions', { *@
+            @*         method: 'POST', *@
+            @*         headers: { *@
+            @*             'Content-Type': 'application/json' *@
+            @*         }, *@
+            @*         body: JSON.stringify(payload) *@
+            @*     }); *@
+            @* *@
+            @*     if (response.ok) { *@
+            @*         console.log('Passkey options created successfully'); *@
+            @*          *@
+            @*         const optionsAsJson = await response.json(); *@
+            @*         const options = PublicKeyCredential.parseCreationOptionsFromJSON(optionsAsJson); *@
+            @*          *@
+            @*         await navigator.credentials.create({publicKey: options}) *@
+            @*             .then(async (credential) => { *@
+            @*                 *@
+            @*                 const verificationResponse = await fetch('/api/Passkey/CompletePassKeyRegistration', { *@
+            @*                     method: 'POST', *@
+            @*                     headers: { *@
+            @*                         'Content-Type': 'application/json' *@
+            @*                     }, *@
+            @*                     body: JSON.stringify(credential) *@
+            @*                 }); *@
+            @* *@
+            @*                 if (verificationResponse.ok) { *@
+            @*                     console.log('Passkey registered successfully'); *@
+            @*                 } else { *@
+            @*                     console.error('Failed to verify passkey'); *@
+            @*                 } *@
+            @*             }) *@
+            @*             .catch((error) => { *@
+            @*                 console.error('Error creating credentials:', error); *@
+            @*             }); *@
+            @*     } else { *@
+            @*         console.error('Failed to create passkey options'); *@
+            @*     } *@
+            @* } catch (error) { *@
+            @*     console.error('Error:', error); *@
+            @* } *@
         });
     </script>
 }

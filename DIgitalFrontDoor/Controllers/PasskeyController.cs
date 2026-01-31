@@ -16,9 +16,9 @@ namespace DIgitalFrontDoor.Controllers
         {
             var newUser = new IdentityUser();
             newUser.UserName = payload.UserName;
-            newUser.Email = payload.DisplayName;
+            newUser.Email = payload.UserName;
             newUser.EmailConfirmed = true;
-            
+
             IdentityResult createResult = await userManager.CreateAsync(newUser);
 
             await signInManager.SignInAsync(newUser,new AuthenticationProperties());
@@ -26,7 +26,7 @@ namespace DIgitalFrontDoor.Controllers
             var passKeyEntity = new PasskeyUserEntity()
             {
                 Id = newUser.Id,
-                DisplayName =  payload.DisplayName,
+                DisplayName =  payload.DeviceName,
                 Name = payload.UserName
             };
 
@@ -102,6 +102,6 @@ namespace DIgitalFrontDoor.Controllers
     public class PassKeyPayload
     {
         public string UserName { get; set; }
-        public string DisplayName { get; set; }
+        public string DeviceName { get; set; }
     }
 }
