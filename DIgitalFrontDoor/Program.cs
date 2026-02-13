@@ -1,6 +1,9 @@
 using DIgitalFrontDoor;
+using DIgitalFrontDoor.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +24,17 @@ builder.Services.Configure<IdentityPasskeyOptions>(options =>
     options.ChallengeSize = 64;
 });
 
+
 builder.Services
-    .AddIdentity<IdentityUser,IdentityRole>()
-    .AddUserStore<InMemoryUserStore>()
-    .AddRoleStore<InMemoryRoleStore>()
+    .AddIdentity<IdentityUser,IdentityRole>(options =>
+        {
+            options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;  
+        })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
    .AddDefaultTokenProviders(); // Configure Identity services
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -55,5 +64,11 @@ app.MapStaticAssets();
 app.MapRazorPages()
     .WithStaticAssets();
 app.MapControllers(); // Map API controllers
+
+// Remove all users
+// using (var scope= builder.Services.BuildServiceProvider().CreateScope())
+// {
+//     await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Reset();
+// }
 
 app.Run();

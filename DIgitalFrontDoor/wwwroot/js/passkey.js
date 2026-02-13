@@ -46,15 +46,17 @@ async function registerPasskey(username , deviceName)
             method: "POST",
             headers:{
                 "Content-Type":"application/json"
-            },
+            },  
             body:JSON.stringify(body)
         });
     
     const optionsAsJson = await response.json();
     const options = await PublicKeyCredential.parseCreationOptionsFromJSON(optionsAsJson);
     
-    const credentials = await navigator.credentials.create({publicKey:options,mediation:"required"});
-
+    try {
+        
+        const credentials = await navigator.credentials.create({publicKey: options});
+   
     // Send credentials to server
     
    const registerResponse = await fetch("/api/passkey/CompletePassKeyRegistration",
@@ -66,7 +68,12 @@ async function registerPasskey(username , deviceName)
              body:JSON.stringify(credentials)
        })
     
-    return registerResponse.ok;
-    
-    
+        return registerResponse.ok;
+    }
+    catch (error) {
+        console.error(error.name);
+        return false;
+    }
+
+
 }

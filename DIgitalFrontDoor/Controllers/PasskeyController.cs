@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using DIgitalFrontDoor.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,20 @@ namespace DIgitalFrontDoor.Controllers
         [HttpPost("CreatePassKeyOptions")]
         public async Task<IActionResult> CreatePassKeyOptions([FromBody] PassKeyPayload payload)
         {
-            var newUser = new IdentityUser();
-            newUser.UserName = payload.UserName;
-            newUser.Email = payload.UserName;
-            newUser.EmailConfirmed = true;
+            IdentityUser? newUser = await userManager.FindByEmailAsync(payload.UserName);
 
-            IdentityResult createResult = await userManager.CreateAsync(newUser);
+            if (newUser == null)
+            {
+                newUser = new IdentityUser
+                {
+                    UserName = payload.UserName,
+                    Email = payload.UserName,
+                    EmailConfirmed = true
+                };
+
+
+                IdentityResult createResult = await userManager.CreateAsync(newUser);
+            }
 
             await signInManager.SignInAsync(newUser,new AuthenticationProperties());
             
@@ -45,18 +54,21 @@ namespace DIgitalFrontDoor.Controllers
             {
                 return BadRequest("No activation session restart the registration process");
             }
+         
+            IdentityUser? user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return BadRequest("User account not found to bind passkey to");
+            }
             
-            using var reader = new StreamReader(Request.Body);
-            string passkeyCredentialsASJson = await reader.ReadToEndAsync();
+           string passkeyCredentialsAsJson = await Request.ReadBodyAsStringAsync();
 
            PasskeyAttestationResult attestationResult =
-                await signInManager.PerformPasskeyAttestationAsync(passkeyCredentialsASJson);
+                await signInManager.PerformPasskeyAttestationAsync(passkeyCredentialsAsJson);
 
-           IdentityUser? user = await userManager.GetUserAsync(new ClaimsPrincipal(User.Identity));
-
-           if (user == null)
+           if (!attestationResult.Succeeded)
            {
-               return BadRequest("User account not found to bind passkey to");
+               return BadRequest(attestationResult.Failure?.Message ?? "Unknown Error");
            }
            
            var addResult = 
@@ -83,10 +95,9 @@ namespace DIgitalFrontDoor.Controllers
         }
         
         [HttpPost("VerifyPasskey")]
-        public async Task<IActionResult> Verify(string? username)
+        public async Task<IActionResult> Verify()
         {
-            using var reader = new StreamReader(Request.Body);
-            string credentials = await reader.ReadToEndAsync();
+            string credentials = await Request.ReadBodyAsStringAsync();
 
             SignInResult result = await signInManager.PasskeySignInAsync(credentials);
 

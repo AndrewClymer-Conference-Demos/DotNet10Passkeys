@@ -29,11 +29,10 @@
             const username = document.getElementById('userName').value;
 
             const signInSuccess = await verifyPasskey(username,mediation);
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const returnUrl = urlParams.get('ReturnUrl') || '/';
-
+            
             if (signInSuccess) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const returnUrl = urlParams.get('ReturnUrl') || '/';
                 console.log('Passkey login successful');
                 window.location.href = returnUrl;
             } else {
