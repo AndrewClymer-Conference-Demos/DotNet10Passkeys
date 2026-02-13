@@ -65,10 +65,5 @@ app.MapRazorPages()
     .WithStaticAssets();
 app.MapControllers(); // Map API controllers
 
-// Remove all users
-// using (var scope= builder.Services.BuildServiceProvider().CreateScope())
-// {
-//     await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Reset();
-// }
 
 app.Run();
