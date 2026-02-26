@@ -19,7 +19,6 @@ builder.Services.AddAuthentication()
 
 builder.Services.Configure<IdentityPasskeyOptions>(options =>
 {
-    //options.ServerDomain = "rsk.localhost";
     options.AuthenticatorTimeout = TimeSpan.FromMinutes(3);
     options.ChallengeSize = 64;
 });

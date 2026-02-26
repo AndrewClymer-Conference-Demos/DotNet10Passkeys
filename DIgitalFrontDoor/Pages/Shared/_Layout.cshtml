@@ -40,7 +40,7 @@
                     {
                         <li class="nav-item">
                             <form id="logoutForm" asp-area="" asp-page="/Account/Signout" method="post">
-                                <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
+                                <button type="submit" class="btn btn-link nav-link text-dark">Logout @User.Identity.Name</button>
                             </form>
                         </li>
                     }
@@ -57,7 +57,7 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2026 - DIgitalFrontDoor - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        &copy; 2026 - DigitalFrontDoor - <a asp-area="" asp-page="/Privacy">Privacy</a>
     </div>
 </footer>
 
