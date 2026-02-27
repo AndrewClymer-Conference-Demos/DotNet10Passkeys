@@ -1,4 +1,5 @@
 using DIgitalFrontDoor;
+using DIgitalFrontDoor.Pages.Account;
 using DIgitalFrontDoor.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers(); // Add support for API controllers
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddAuthentication()
     .AddCookie(options =>
@@ -42,6 +49,9 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/Login"; // Optional: Set an access denied path
 });
 
+
+builder.Services.AddSingleton<IVerifyAccountOwnership,CookieVerifyAccountOwnership>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -58,6 +68,7 @@ app.UseRouting();
 
 app.UseAuthentication(); // Enable authentication middleware
 app.UseAuthorization();
+app.UseSession();
 
 app.MapStaticAssets();
 app.MapRazorPages()

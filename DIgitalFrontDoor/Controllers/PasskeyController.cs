@@ -13,7 +13,7 @@ namespace DIgitalFrontDoor.Controllers
     {
 
         [HttpPost("CreatePassKeyOptions")]
-        public async Task<IActionResult> CreatePassKeyOptions([FromBody] PassKeyPayload payload)
+        public async Task<IActionResult> CreatePassKeyOptions()
         {
            return Problem("Not Implemented Yet",statusCode:501);
         }

@@ -3,18 +3,21 @@
     ViewData["Title"] = "Passkey Login";
 }
 
-<div class="container">
-    <h1>Passkey Login</h1>
-    <form id="loginForm">
-        <div class="form-group">
-            <label for="userName">User Name (Optional)</label>
-            <input type="text" id="userName" name="userName" class="form-control" autocomplete=""/>
+<div class="container py-5">
+    <div class="mx-auto" style="max-width: 400px;">
+        <h1>Sign-in</h1>
+        <form id="loginForm">
+            <div class="form-group ">
+                <label  for="userName">Email (Optional)</label>
+                <input  type="text" id="userName" name="userName" class="form-control px-4" autocomplete=""/>
+            </div>
+            <br/>
+            <button type="button" id="loginButton" class="btn btn-primary px-4">Sign-in with Passkey</button>
+            <button type="button" id="registerButton" class="btn btn-secondary px-4" onclick="window.location.href='/Account/UserRegistration'">Register</button>
+        </form>
+        <div>
+            <p id="status"></p>
         </div>
-        <button type="button" id="loginButton" class="btn btn-primary">Login with Passkey</button>
-        <button type="button" id="registerButton" class="btn btn-secondary" onclick="window.location.href='/Account/UserRegistration'">Register</button>
-    </form>
-    <div>
-        <p id="status"></p>
     </div>
 </div>
 
