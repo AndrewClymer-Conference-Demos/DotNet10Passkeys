@@ -40,6 +40,6 @@ namespace DIgitalFrontDoor.Controllers
 
     public class PasskeyRequest
     {
-        public string? Username { get; set; }
+        public string Username { get; set; } = String.Empty;
     }
 }
