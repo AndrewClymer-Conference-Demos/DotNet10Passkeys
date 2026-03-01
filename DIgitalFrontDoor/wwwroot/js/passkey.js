@@ -5,7 +5,7 @@ async function verifyPasskey(username,mediation)
 }
 
 
-async function registerPasskey() 
+async function registerPasskey(deviceName) 
 {
    return false;
 }

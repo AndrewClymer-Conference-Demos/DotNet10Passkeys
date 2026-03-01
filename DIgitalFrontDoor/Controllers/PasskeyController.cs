@@ -13,7 +13,7 @@ namespace DIgitalFrontDoor.Controllers
     {
 
         [HttpPost("CreatePassKeyOptions")]
-        public async Task<IActionResult> CreatePassKeyOptions()
+        public async Task<IActionResult> CreatePassKeyOptions([FromBody]PasskeySetup passkeySetup)
         {
            return Problem("Not Implemented Yet",statusCode:501);
         }
@@ -25,7 +25,7 @@ namespace DIgitalFrontDoor.Controllers
         }
 
         [HttpPost("PasskeyRequestOptions")]
-        public async Task<IActionResult> PasskeyRequestOptions(string? username)
+        public async Task<IActionResult> PasskeyRequestOptions([FromBody] PasskeyRequest request)
         {
 
             return Problem("Not Implemented Yet",statusCode:501);
@@ -38,9 +38,13 @@ namespace DIgitalFrontDoor.Controllers
         }
     }
 
-    public class PassKeyPayload
+    public class PasskeySetup
     {
-        public string UserName { get; set; } = String.Empty;
         public string DeviceName { get; set; } = String.Empty;
+    }
+
+    public class PasskeyRequest
+    {
+        public string? Username { get; set; }
     }
 }

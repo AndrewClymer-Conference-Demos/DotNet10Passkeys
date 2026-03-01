@@ -23,8 +23,12 @@
             </li>
         </ul>
 
-       
-            <button type="button"
+        <div class="form-group">
+            <label  for="userName">Key name (Optional)</label>
+            <input  type="text" id="deviceName" name="deviceName" class="form-control px-4"/>
+        </div>
+        <br/>
+        <button type="button"
                     id="registerButton"
                     class="btn btn-primary px-4"
                     style="min-width: 220px; min-height: 48px;">
@@ -44,11 +48,12 @@
 @section Scripts {
     <script>
         const statusElement = document.getElementById('status');
+        const deviceName = document.getElementById('deviceName');
         
         document.getElementById('registerButton').addEventListener('click', async function () {
            statusElement.textContent = "Registering Your Passkey.....";
             
-            const registerResult= await registerPasskey();
+            const registerResult= await registerPasskey(deviceName.value);
             
             if ( registerResult ) {
                 window.location = "/";
