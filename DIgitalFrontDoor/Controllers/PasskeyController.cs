@@ -1,9 +1,5 @@
-using System.Security.Claims;
-using DIgitalFrontDoor.Extensions;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace DIgitalFrontDoor.Controllers
 {
@@ -11,7 +7,6 @@ namespace DIgitalFrontDoor.Controllers
     [Route("api/[controller]")]
     public class PasskeyController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager) : ControllerBase
     {
-
         [HttpPost("CreatePassKeyOptions")]
         public async Task<IActionResult> CreatePassKeyOptions([FromBody]PasskeySetup passkeySetup)
         {
