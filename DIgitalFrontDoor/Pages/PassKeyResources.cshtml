@@ -1,5 +1,7 @@
 @page
+@model PassKeyResourcesModel
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
 @attribute [Authorize]
 @{
     ViewData["Title"] = "Passkey Resources";
@@ -8,4 +10,18 @@
 <div class="container">
     <h1>Passkey Resources</h1>
     <p>Welcome to the Passkey Resources page. Only authenticated users can access this content.</p>
+    
+    <table>
+        <tr>
+            <th>Credential Id</th>
+            <th>Display name</th>
+        </tr>
+        @foreach (UserPasskeyInfo passkey in Model.PassKeys)
+        {
+            <tr>
+                <td>@passkey.CredentialId</td>
+                <td>@passkey.Name</td>
+            </tr>
+        }
+    </table>
 </div>
