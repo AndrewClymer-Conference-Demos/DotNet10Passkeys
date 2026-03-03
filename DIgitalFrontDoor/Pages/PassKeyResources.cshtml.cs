@@ -16,4 +16,3 @@ public class PassKeyResourcesModel(UserManager<IdentityUser> userManager) :PageM
         }
     }
 }
-}

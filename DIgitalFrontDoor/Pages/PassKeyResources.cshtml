@@ -19,7 +19,7 @@
         @foreach (UserPasskeyInfo passkey in Model.PassKeys)
         {
             <tr>
-                <td>@passkey.CredentialId</td>
+                <td>@BitConverter.ToString(passkey.CredentialId)</td>
                 <td>@passkey.Name</td>
             </tr>
         }
