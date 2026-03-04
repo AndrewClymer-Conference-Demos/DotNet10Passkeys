@@ -9,7 +9,7 @@
         <form id="loginForm">
             <div class="form-group ">
                 <label  for="userName">Email (Optional)</label>
-                <input  type="text" id="userName" name="userName" class="form-control px-4" autocomplete=""/>
+                <input  type="text" id="userName" name="userName" class="form-control px-4" autocomplete="username webauthn"/>
             </div>
             <br/>
             <button type="button" id="loginButton" class="btn btn-primary px-4">Sign-in with Passkey</button>
@@ -42,11 +42,12 @@
                 console.error('Passkey login failed');
                 statusElement.textContent = 'Passkey login failed. Please try again.';
             }
+            
         }
         
        document.getElementById('loginButton').addEventListener('click', async function() {await login("optional")});
       
-       @* document.addEventListener("DOMContentLoaded", async function() { await login("conditional")});  *@
+        document.addEventListener("DOMContentLoaded", async function() { await login("conditional")}); 
         
     </script>
 }
