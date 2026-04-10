@@ -1,0 +1,36 @@
+@page
+@model Account.UserRegistration
+@{
+    ViewData["Title"] = "User Registration";
+}
+
+<div class="container py-5 ">
+    <div class="mx-auto" style="max-width: 400px;">
+
+        <h1 class="mb-4">User Registration</h1>
+        
+        <form id="registrationForm" class="mt-4" method="post">
+
+            <div class="mb-3 mx-auto" style="max-width: 400px;">
+                <label class="form-label fw-semibold" for="emailAddress">
+                    Email
+                </label>
+                <input type="text"
+                       id="emailAddress"
+                       name="EmailAddress"
+                       class="form-control form-control-sm"
+                       required />
+            </div>
+
+            <button type="submit"
+                    id="registerButton"
+                    class="btn btn-primary px-4"
+                    style="min-width: 220px; min-height: 48px;">
+                Verify Email
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
