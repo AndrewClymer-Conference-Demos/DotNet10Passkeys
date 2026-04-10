@@ -1,4 +1,3 @@
-using DIgitalFrontDoor.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,65 +10,26 @@ namespace DIgitalFrontDoor.Controllers
         [HttpPost("CreatePassKeyOptions")]
         public async Task<IActionResult> CreatePassKeyOptions([FromBody]PasskeySetup passkeySetup)
         {
-            IdentityUser? user = await userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return BadRequest("Must be authenticated to setup a Passkey");
-            }
-
-            PasskeyUserEntity newPasskey = new PasskeyUserEntity()
-            {
-                Id = user.Id,
-                Name = user.UserName,
-                DisplayName = passkeySetup.DeviceName
-            };
-
-            string options = await signInManager.MakePasskeyCreationOptionsAsync(newPasskey);
-
-            return Ok(options);
+           return Problem("Not Implemented Yet",statusCode:501);
         }
 
         [HttpPost("CompletePassKeyRegistration")]
         public async Task<IActionResult> CompletePassKeyRegistration()
         {
-            IdentityUser? user = await userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return BadRequest("Must be authenticated to setup a Passkey");
-            }
-            
-            string credentials = await Request.ReadBodyAsStringAsync();
-
-            PasskeyAttestationResult attestationResult = await signInManager.PerformPasskeyAttestationAsync(credentials);
-            if (attestationResult.Succeeded == false)
-            {
-                return BadRequest("Bad Actor go away");
-            }
-
-            attestationResult.Passkey.Name = attestationResult.UserEntity.DisplayName;
-            
-            var addPasskeyResult = await userManager.AddOrUpdatePasskeyAsync(user, attestationResult.Passkey);
-
-            return addPasskeyResult.Succeeded ? Ok() : BadRequest("Failed to save passkey");
+            return Problem("Not Implemented Yet",statusCode:501);
         }
 
         [HttpPost("PasskeyRequestOptions")]
         public async Task<IActionResult> PasskeyRequestOptions([FromBody] PasskeyRequest request)
         {
-            IdentityUser? user = await userManager.FindByNameAsync(request.Username);
 
-            string options = await signInManager.MakePasskeyRequestOptionsAsync(user);
-            return Ok(options);
+            return Problem("Not Implemented Yet",statusCode:501);
         }
         
         [HttpPost("VerifyPasskey")]
         public async Task<IActionResult> Verify()
         {
-            string credentials = await Request.ReadBodyAsStringAsync();
-
-            var signInResult = await signInManager.PasskeySignInAsync(credentials);
-
-            return signInResult.Succeeded ? Ok() : BadRequest("Failed to authenticate");
+            return Problem("Not Implemented Yet",statusCode:501);
         }
     }
 
