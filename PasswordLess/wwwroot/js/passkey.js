@@ -33,10 +33,7 @@ function toCredentialDTO(credential)
     return dto;
 }
 
-
-
-
-async function verifyPasskey(username,mediation)
+async function verifyPasskey(username,mediation,signal)
 {
 
     const optionsRequestBody = {
@@ -53,13 +50,15 @@ async function verifyPasskey(username,mediation)
     const optionsAsJson = await optionsRequest.json();
     const options = PublicKeyCredential.parseRequestOptionsFromJSON(optionsAsJson);
     
-    const credential = await navigator.credentials.get({publicKey:options,mediation});
+    const credential = await navigator.credentials.get({publicKey:options,mediation,signal});
+    
+    const payload = toCredentialDTO(credential);
     
     const sendCredentials = await fetch ("/api/Passkey/VerifyPasskey",
         {
             method:"POST",
             headers:{"content-type":"application/json"},
-            body:JSON.stringify(credential)
+            body:JSON.stringify(payload)
         })
 
     return sendCredentials.ok;

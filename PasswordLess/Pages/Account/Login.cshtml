@@ -25,14 +25,19 @@
     <script src="/js/passkey.js"></script>
     <script>
         
+        let abortLogin = new AbortController()
+        
         async function login(mediation){
             const statusElement = document.getElementById('status');
 
+            abortLogin.abort();
+            abortLogin = new AbortController();
+            
             statusElement.textContent = 'Initiating Passkey login...';
             const username = document.getElementById('userName').value;
 
             try {
-                const signInSuccess = await verifyPasskey(username,mediation);
+                const signInSuccess = await verifyPasskey(username,mediation,abortLogin.signal);
 
                 if (signInSuccess) {
                     const urlParams = new URLSearchParams(window.location.search);
