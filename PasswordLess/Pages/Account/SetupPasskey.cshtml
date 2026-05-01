@@ -53,15 +53,22 @@
         document.getElementById('registerButton').addEventListener('click', async function () {
            statusElement.textContent = "Registering Your Passkey.....";
             
-            const registerResult= await registerPasskey(deviceName.value);
-            
-            if ( registerResult ) {
-                window.location = "/";
-            }
-            else
-            {
-                statusElement.textContent = "Passkey registration failed. Please try again.";
-            }
+           try {
+               const registerResult= await registerPasskey(deviceName.value);
+
+               if ( registerResult ) {
+                   window.location = "/";
+               }
+               else
+               {
+                   statusElement.textContent = "Passkey registration failed. Please try again.";
+               }
+           }
+           catch(error)
+           {
+               statusElement.textContent = error.message;
+           }
+           
             
         });
     </script>
