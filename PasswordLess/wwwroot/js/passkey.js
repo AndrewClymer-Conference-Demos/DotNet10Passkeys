@@ -12,6 +12,22 @@ function bufferToBase64(buffer) {
         .replace(/=+$/, "");
 }
 
+function toNewCredentialDTO(credential)
+{
+    const dto = {
+        id: credential.id,
+        rawId: bufferToBase64(credential.rawId),
+        type: credential.type,
+        response: {
+            clientDataJSON: bufferToBase64(credential.response.clientDataJSON),
+            attestationObject: bufferToBase64(credential.response.attestationObject)
+        },
+        clientExtensionResults: credential.getClientExtensionResults?.() ?? {}
+    };
+
+    return dto;
+}
+
 function toCredentialDTO(credential)
 {
     const dto = {
@@ -83,12 +99,13 @@ async function registerPasskey(deviceName)
     
     const credentials = await navigator.credentials.create({publicKey:options});
 
+    const credentialsDTO = toNewCredentialDTO(credentials);
     
     const sendCredentials = await fetch ("/api/Passkey/CompletePassKeyRegistration",
         {
             method:"POST",
             headers:{"content-type":"application/json"},
-            body:JSON.stringify(credentials)
+            body:JSON.stringify(credentialsDTO)
         })
     
    return sendCredentials.ok;
