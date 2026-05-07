@@ -14,7 +14,7 @@ function bufferToBase64(buffer) {
 
 function toNewCredentialDTO(credential)
 {
-    const dto = {
+    return {
         id: credential.id,
         rawId: bufferToBase64(credential.rawId),
         type: credential.type,
@@ -24,13 +24,11 @@ function toNewCredentialDTO(credential)
         },
         clientExtensionResults: credential.getClientExtensionResults?.() ?? {}
     };
-
-    return dto;
 }
 
 function toCredentialDTO(credential)
 {
-    const dto = {
+    return  {
         id: credential.id,
         rawId: bufferToBase64(credential.rawId),
         type: credential.type,
@@ -45,8 +43,6 @@ function toCredentialDTO(credential)
         },
         clientExtensionResults: credential.getClientExtensionResults?.() ?? {}
     };
-
-    return dto;
 }
 
 async function verifyPasskey(username,mediation,signal)
