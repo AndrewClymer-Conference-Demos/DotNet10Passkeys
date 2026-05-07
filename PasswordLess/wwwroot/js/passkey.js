@@ -12,9 +12,23 @@ function bufferToBase64(buffer) {
         .replace(/=+$/, "");
 }
 
+function toNewCredentialDTO(credential)
+{
+    return {
+        id: credential.id,
+        rawId: bufferToBase64(credential.rawId),
+        type: credential.type,
+        response: {
+            clientDataJSON: bufferToBase64(credential.response.clientDataJSON),
+            attestationObject: bufferToBase64(credential.response.attestationObject)
+        },
+        clientExtensionResults: credential.getClientExtensionResults?.() ?? {}
+    };
+}
+
 function toCredentialDTO(credential)
 {
-    const dto = {
+    return  {
         id: credential.id,
         rawId: bufferToBase64(credential.rawId),
         type: credential.type,
@@ -29,10 +43,7 @@ function toCredentialDTO(credential)
         },
         clientExtensionResults: credential.getClientExtensionResults?.() ?? {}
     };
-
-    return dto;
 }
-
 
 
 async function verifyPasskey(username,mediation)

@@ -31,17 +31,25 @@
             statusElement.textContent = 'Initiating Passkey login...';
             const username = document.getElementById('userName').value;
 
-            const signInSuccess = await verifyPasskey(username,mediation);
-            
-            if (signInSuccess) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const returnUrl = urlParams.get('ReturnUrl') || '/';
-                console.log('Passkey login successful');
-                window.location.href = returnUrl;
-            } else {
-                console.error('Passkey login failed');
-                statusElement.textContent = 'Passkey login failed. Please try again.';
+            try {
+                const signInSuccess = await verifyPasskey(username,mediation);
+
+                if (signInSuccess) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const returnUrl = urlParams.get('ReturnUrl') || '/';
+                    console.log('Passkey login successful');
+                    window.location.href = returnUrl;
+                } else {
+                    console.error('Passkey login failed');
+                    statusElement.textContent = 'Passkey login failed. Please try again.';
+                }
             }
+            catch(error)
+            {
+                statusElement.textContent = error.message;
+            }
+            
+          
         }
         
        document.getElementById('loginButton').addEventListener('click', async function() {await login("optional")});
