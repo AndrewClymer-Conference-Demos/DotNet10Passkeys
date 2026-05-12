@@ -46,13 +46,54 @@ function toCredentialDTO(credential)
 }
 
 
-async function verifyPasskey(username,mediation)
+async function verifyPasskey(username,mediation,signal)
 {
-    return false;
+    const optionsBody = { username};
+    const optionsRequest = await fetch("/api/Passkey/PasskeyRequestOptions",
+        {
+            "method":"POST",
+            "headers":{"content-type":"application/json"},
+            body:JSON.stringify(optionsBody)
+        });
+    
+    const optionsAsJson = await optionsRequest.json();
+    const options = PublicKeyCredential.parseRequestOptionsFromJSON(optionsAsJson);
+    
+    const credentials = await navigator.credentials.get({publicKey:options,mediation,signal});
+
+    const sendCredentialsRequest = await fetch("/api/Passkey/VerifyPasskey",
+        {
+            "method":"POST",
+            "headers":{"content-type":"application/json"},
+            body:JSON.stringify(toCredentialDTO(credentials))
+        });
+
+    return sendCredentialsRequest.ok;
 }
 
 
 async function registerPasskey(deviceName) 
 {
-   return false;
+    const optionsBody = { deviceName};
+    
+    const optionsRequest = await fetch("/api/Passkey/CreatePassKeyOptions",
+        {
+            "method":"POST",
+            "headers":{"content-type":"application/json"},
+            body:JSON.stringify(optionsBody)
+        });
+    
+    const optionsAsJson = await optionsRequest.json();
+    const options = PublicKeyCredential.parseCreationOptionsFromJSON(optionsAsJson);
+    
+    const credentials = await navigator.credentials.create({publicKey:options});
+
+    const addCredentialsRequest = await fetch("/api/Passkey/CompletePassKeyRegistration",
+        {
+            "method":"POST",
+            "headers":{"content-type":"application/json"},
+            body:JSON.stringify(toNewCredentialDTO(credentials))
+        });
+    
+   return addCredentialsRequest.ok;
 }

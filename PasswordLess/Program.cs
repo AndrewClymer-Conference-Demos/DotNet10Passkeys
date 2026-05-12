@@ -28,6 +28,7 @@ builder.Services.Configure<IdentityPasskeyOptions>(options =>
 {
     options.AuthenticatorTimeout = TimeSpan.FromMinutes(3);
     options.ChallengeSize = 64;
+    options.ResidentKeyRequirement = "required";
 });
 
 
