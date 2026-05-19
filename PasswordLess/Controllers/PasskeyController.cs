@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PasswordLess.Extensions;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace PasswordLess.Controllers
 {
@@ -10,26 +12,72 @@ namespace PasswordLess.Controllers
         [HttpPost("CreatePassKeyOptions")]
         public async Task<IActionResult> CreatePassKeyOptions([FromBody]PasskeySetup passkeySetup)
         {
-           return Problem("Not Implemented Yet",statusCode:501);
+            IdentityUser? user = await userManager.GetUserAsync(User);
+            if (user?.UserName == null)
+            {
+                return BadRequest("Need to be authenticated");
+            }
+
+            PasskeyUserEntity newPassKey = new PasskeyUserEntity()
+            {
+                DisplayName = passkeySetup.DeviceName,
+                Id = user.Id,
+                Name = user.UserName
+            };
+
+            string options = await signInManager.MakePasskeyCreationOptionsAsync(newPassKey);
+
+            return Ok(options);
         }
 
         [HttpPost("CompletePassKeyRegistration")]
         public async Task<IActionResult> CompletePassKeyRegistration()
         {
-            return Problem("Not Implemented Yet",statusCode:501);
+            IdentityUser? user = await userManager.GetUserAsync(User);
+            if (user?.UserName == null)
+            {
+                return BadRequest("Need to be authenticated");
+            }
+
+            string credentials = await Request.ReadBodyAsStringAsync();
+            PasskeyAttestationResult result = await signInManager.PerformPasskeyAttestationAsync(credentials);
+            if (result.Succeeded == false)
+            {
+                return BadRequest("Failed to create credential");
+            }
+
+            // this sucks!!!
+            result.Passkey.Name = result.UserEntity.DisplayName;
+            
+            IdentityResult addResult = await userManager.AddOrUpdatePasskeyAsync(user, result.Passkey);
+
+
+
+            return addResult.Succeeded ? Ok() : BadRequest("Failed to add user");
         }
 
         [HttpPost("PasskeyRequestOptions")]
         public async Task<IActionResult> PasskeyRequestOptions([FromBody] PasskeyRequest request)
         {
+            IdentityUser? user = await userManager.FindByNameAsync(request.Username);
 
-            return Problem("Not Implemented Yet",statusCode:501);
+            string options = await signInManager.MakePasskeyRequestOptionsAsync(user);
+
+            return Ok(options);
         }
         
         [HttpPost("VerifyPasskey")]
         public async Task<IActionResult> Verify()
         {
-            return Problem("Not Implemented Yet",statusCode:501);
+            string credentials = await Request.ReadBodyAsStringAsync();
+
+            SignInResult result = await signInManager.PasskeySignInAsync(credentials);
+            if (result.Succeeded == false)
+            {
+                return BadRequest("Not signed in");
+            }
+
+            return Ok();
         }
     }
 
