@@ -17,18 +17,25 @@
                     <th scope="col">Credential Id</th>
                     <th scope="col">Display name</th>
                     <th scope="col">Backed Up</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (UserPasskeyInfo passkey in Model.PassKeys)
                 {
                     <tr>
-                        <td>@BitConverter.ToString(passkey.CredentialId)</td>
+                        <td>@Convert.ToHexString(passkey.CredentialId)</td>
                         <td>@passkey.Name</td>
                         <td>
                             <span class="badge @(passkey.IsBackedUp ? "bg-success" : "bg-danger")">
                                 @(passkey.IsBackedUp ? "Yes" : "No")
                             </span>
+                        </td>
+                        <td>
+                            <form method="post" asp-page-handler="Delete" class="d-inline">
+                                <input type="hidden" name="credentialId" value="@Convert.ToHexString(passkey.CredentialId)" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                            </form>
                         </td>
                     </tr>
                 }
