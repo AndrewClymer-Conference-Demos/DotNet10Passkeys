@@ -9,7 +9,7 @@
         <form id="loginForm">
             <div class="form-group ">
                 <label  for="userName">Email (Optional)</label>
-                <input  type="text" id="userName" name="userName" class="form-control px-4" autocomplete=""/>
+                <input  type="text" id="userName" name="userName" class="form-control px-4" autocomplete="username webauthn"/>
             </div>
             <br/>
             <button type="button" id="loginButton" class="btn btn-primary px-4">Sign-in with Passkey</button>
@@ -25,6 +25,8 @@
     <script src="/js/passkey.js"></script>
     <script>
         
+        let loginAbortController = new AbortController()
+        
         async function login(mediation){
             const statusElement = document.getElementById('status');
 
@@ -32,7 +34,11 @@
             const username = document.getElementById('userName').value;
 
             try {
-                const signInSuccess = await verifyPasskey(username,mediation);
+                
+                loginAbortController.abort();
+                loginAbortController = new AbortController();
+                
+                const signInSuccess = await verifyPasskey(username,mediation,loginAbortController.signal);
 
                 if (signInSuccess) {
                     const urlParams = new URLSearchParams(window.location.search);
@@ -53,8 +59,8 @@
         }
         
        document.getElementById('loginButton').addEventListener('click', async function() {await login("optional")});
-      
-       @* document.addEventListener("DOMContentLoaded", async function() { await login("conditional")});  *@
+        
+        document.addEventListener("DOMContentLoaded", async function() { await login("conditional")}); 
         
     </script>
 }
