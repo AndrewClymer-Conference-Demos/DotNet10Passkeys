@@ -68,7 +68,7 @@ async function verifyPasskey(username,mediation,signal)
         {
             method:"POST",
             headers:{"content-type":"application/json"},
-            body:JSON.stringify(credentials)
+            body:JSON.stringify(toCredentialDTO(credentials))
         });
     
     return verifyCredentials.ok;
@@ -97,7 +97,7 @@ async function registerPasskey(deviceName)
         {
             method:"POST",
             headers:{"content-type":"application/json"},
-            body:JSON.stringify(credentials)
+            body:JSON.stringify(toNewCredentialDTO(credentials))
         });
     
    return saveKeyResponse.ok;
