@@ -45,14 +45,12 @@ function toCredentialDTO(credential)
     };
 }
 
-
-async function verifyPasskey(username,mediation)
+async function registerPasskey(deviceName)
 {
     return false;
 }
 
-
-async function registerPasskey(deviceName) 
+async function verifyPasskey(username,mediation)
 {
-   return false;
+    return false;
 }
